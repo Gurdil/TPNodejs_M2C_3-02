@@ -4,10 +4,9 @@ var router = {};
 var mongoose = require('mongoose');
 var util = require("util");
 var Schema = mongoose.Schema;
-var idClient =1;
 
-// On se connecte à la base de données
-// lancer mongod dans un terminal 
+
+// On se connecte à la base de données, lance mongod dans un terminal 
 mongoose.connect('mongodb://localhost/blog', function(err) {
   if (err) { throw err; }
 });
@@ -62,7 +61,7 @@ routing:
 			//http://localhost:1337/set_info?nb=3
 			this.set_info(this.query.id,this.query.info);
 		} else if (this.path== "/get_info") {
-            this.get_info(this.query.info);
+            this.get_info(this.query.id,this.query.name);
 		} else if (this.path== "/get_friend") {
             this.get_friend(this.query.id);
 		} else if (this.path== "/add_friend") {
@@ -99,12 +98,7 @@ register:
 				_this.msg = register;
 				_this.send_res();
 			}
-			else 
-			{
-				_this.msg ="le nom est deja pris";
-				_this.send_res();
-			}
-			
+			else  _this.erreur(1);		
 	   });  
     },
 	
@@ -130,21 +124,14 @@ login:
 		var _this = this;
        mongoose.model('compte2').findOne({ pseudo : name , motPass : pass },function (err,loginCo)
 	   {
-			if (loginCo == "" )
-			{
-				_this.msg =" le nom n existe pas ";
-				_this.send_res();
-			}
+			if (loginCo == null ) _this.erreur(2);
 			else 
 			{
-				//console.log("AAAAAA - " + util.inspect(loginCo));	
 				_this.msg =loginCo._id
 				_this.send_res();
-		
-			}
-			
+			}		
 	   });  
-	  // return "vous etes connecte " + name ;
+
        		
     },
 logout:
@@ -177,66 +164,62 @@ set_info:
     },
 
 get_info:
-    function (info) {
+    function (id,name) {
         var _this = this;
-       mongoose.model('compte2').find({ content : info },function (err,loginCo)
-	   {
-			if (loginCo == null )
-			{
-				_this.msg =" l info n existe pas ";
-				_this.send_res();
-			}
-			else 
-			{	
-			
-				_this.msg =loginCo;
-				_this.send_res();
+       mongoose.model('compte2').findOne({ _id : id },function (err,loginCo)
+	   { var __this = _this;
+		   mongoose.model('compte2').findOne({ pseudo : name},function (err,loginAmi)
+		   {
+			if( loginAmi != null){
+				for( var i =0; i< loginCo.friend.length; i++){
+				if(loginAmi._id.equals((loginCo.friend[i])))
+				{
+					__this.msg = loginAmi.content;
+					__this.send_res();
+				}
+				}}
+				else __this.erreur(4);	
+			});  
 		
-			}
-			
-	   });  
+		});  
     },
 get_friend:
     function (id) {
         var _this = this;
        mongoose.model('compte2').findOne({ _id : id },function (err,loginCo)
 	   {
-			console.log(loginCo);
 			_this.msg =loginCo.friend;
 			_this.send_res();
 		
-		}
-			
-	   );  
+		});  
     },
 add_friend:
 //http://localhost:1337/add_friend?id=5479e355dd1d72e816ca3166&name=abi
     function (id,name) {
 	var _this = this;
- 
-        mongoose.model('compte2').findOne({ pseudo : name},function (err,loginAmi)
+		mongoose.model('compte2').findOne({ pseudo : name},function (err,loginAmi)
 	   {
 			var __this = _this;
-	   		if (loginAmi == null) 
-			{
-				_this.msg = "votre ami n existe pas";
-				_this.send_res();	
-			
-			}
-		else{
-				mongoose.model('compte2').update({_id :id},{$push : {friend : loginAmi._id}},{multi : true }, function (err,nA)
-				{
-					console.log("nombre de doc mis a jour" + nA);
-					mongoose.model('compte2').find({_id :id},function(err,loginCo)
+			if (loginAmi == null) _this.erreur(3);
+			else{mongoose.model('compte2').findOne({ _id : id },function (err,loginCo)
+		   { 
+				var ___this = __this;
+				var pasAmi = true;
+				for( var i =0; i< loginCo.friend.length; i++){
+				if(loginAmi._id.equals((loginCo.friend[i])))
+				{pasAmi = false;}}
+				if(pasAmi){
+					mongoose.model('compte2').update({_id :id},{$push : {friend : loginAmi._id}},{multi : true }, function (err,nA)
 					{
-						__this.msg = loginCo;
-						__this.send_res();
-				
+						console.log("nombre de doc mis a jour" + nA);
+							___this.msg = loginCo;
+							___this.send_res();
 					});
-				});
-			
-			
-			}
+				} 
+				else __this.erreur(5);
+
+			});
+	}
 		 }); 
 		 				 
     },
@@ -247,15 +230,9 @@ delete_friend:
         mongoose.model('compte2').findOne({ pseudo : name},function (err,loginAmi)
 	   {
 			var __this = _this;
-	   		if (loginAmi == null) 
-			{
-				_this.msg = "votre ami n existe pas";
-				_this.send_res();	
-			
-			}
-		else{
-		
-				
+	   		if (loginAmi == null) _this.erreur(6);
+			else{
+
 				mongoose.model('compte2').update({_id :id},{$pull : { friend : loginAmi._id}},{multi :true},function(err,nA)
 				{
 					console.log("nombre de document mis a jour: " + nA);
@@ -272,9 +249,42 @@ delete_friend:
 		 }); 
 		 				 
     },
+/* send_msg :
+	function (var) {
+		
+	
+	
+	
+	},*/
+
+erreur :
+	function (err) {
+
+	switch(err){
+	case 1 :
+		this.msg = "le nom est deja pris, veuillez en choisir un autre";
+		break;
+	case 2 :
+		this.msg = " vos identifications sont incorrectes"; 
+		break;
+	case 3 :
+		this.msg = "votre ami n'existe pas";
+		break;
+	case 4 :
+		this.msg = "vous n avez pas cette amis dans votre liste d'amis";
+		break;
+	case 5 :
+		this.msg = "votre ami est deja dans votre liste d'amis";
+		break;
+	case 6 :
+		this.msg = "votre ami n existe pas ou n est pas dans votre liste d'amis";
+		break;
+		}
+	this.send_res();
+},
+
 send_res:
     function() {
-        //this.resp.writeHead(200, {'Content-Type': 'text/plain'});
 		this.resp.writeHead(200, {'Content-Type': 'text/plain', "Access-Control-Allow-Header" : "Origin", "Access-Control-Allow-Origin" : "*"});
         this.resp.write(""+this.msg);
         this.resp.end();
