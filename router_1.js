@@ -15,7 +15,7 @@ mongoose.connect('mongodb://localhost/blog', function(err) {
 var registerSchema = new mongoose.Schema({
   pseudo : { type : String, match: /^[a-zA-Z0-9-_]+$/ },
   content : { type : String },
-  id	: { type : Number},
+  id_temp	: { type : Number},
   motPass : { type : Number},
   friend : [ {type : Schema.Types.ObjectId, ref:'compte2'}]
 });
@@ -59,15 +59,15 @@ routing:
             this.logout(this.query.name,this.query.pass);
 		} else if (this.path== "/set_info") {
 			//http://localhost:1337/set_info?nb=3
-			this.set_info(this.query.id,this.query.info);
+			this.set_info(this.query.id_temp,this.query.info);
 		} else if (this.path== "/get_info") {
-            this.get_info(this.query.id,this.query.name);
+            this.get_info(this.query.id_temp,this.query.name);
 		} else if (this.path== "/get_friend") {
-            this.get_friend(this.query.id);
+            this.get_friend(this.query.id_temp);
 		} else if (this.path== "/add_friend") {
-            this.add_friend(this.query.id,this.query.name);
+            this.add_friend(this.query.id_temp,this.query.name);
 		} else if (this.path== "/delete_friend") {
-            this.delete_friend(this.query.id,this.query.name);
+            this.delete_friend(this.query.id_temp,this.query.name);
         } else {
             this.not_found();
         }
@@ -92,8 +92,6 @@ register:
 			{
 				var register = new registerModel({ pseudo : name});
 				register.motPass = pass;
-				register.content = "";
-				register.friend = "";
 				register.save();
 				_this.msg = register;
 				_this.send_res();
@@ -105,6 +103,7 @@ register:
 
 delete_compte:
     function (name,pass) {
+
         this.msg = this.delete_proc(name,pass);
         this.send_res();
     },
@@ -122,140 +121,173 @@ login:
     function (name,pass) 
 	{
 		var _this = this;
-       mongoose.model('compte2').findOne({ pseudo : name , motPass : pass },function (err,loginCo)
+       mongoose.model('compte2').findOne({ pseudo : name , motPass : pass },function (err,user)
 	   {
-			if (loginCo == null ) _this.erreur(2);
+			if (user == null ) _this.erreur(2);
 			else 
 			{
-				_this.msg =loginCo._id
-				_this.send_res();
+				var id_temp= Math.floor(Math.random() * 100000) + +new Date();
+				user.id_temp = id_temp;
+				user.save(function (e){
+					if (e) console.log(e);
+					else {
+						_this.msg = ""+id_temp;
+						_this.send_res();
+					}
+				});
 			}		
 	   });  
 
        		
     },
 logout:
-    function (name,pass) {
-        this.msg = this.logout_proc(name,pass);
-        this.send_res();
-    },
-logout_proc:
-    function (name,pass) {
-       mongoose.model('compte2').find({ pseudo : name , motPass : pass },function (err){
-		if(err) return handleError(err);
-	   });
-		return " your are deconnected now ";
-    },
-set_info:
-    function (id,info) {
-	var _this = this;		
-
-	mongoose.model('compte2').update({_id :id},{content : info},{multi : true }, function ()
+    function (name,pass) 
 	{
-		var __this = _this;
-		mongoose.model('compte2').find({_id :id},function(err,loginCo)
-		{
-			__this.msg = loginCo;
-			__this.send_res();
-	
-		});
-	});
-		
+		var _this = this;
+       mongoose.model('compte2').findOne({ pseudo : name , motPass : pass },function (err,user)
+	   {
+			if (user == null ) _this.erreur(2);
+			else 
+			{
+				user.id_temp = 0 ;
+				user.save(function (e){
+					if (e) console.log(e);
+					else {
+						_this.msg = ""+user;
+						_this.send_res();
+					}
+				});
+
+			}		
+	   });  
+
+    },
+
+set_info:
+    function (id_temp,info) 
+	{
+		var _this = this;		
+		if(id_temp != 0){
+			mongoose.model('compte2').update({id_temp:id_temp},{content : info},{multi : true }, function ()
+			{
+				
+				mongoose.model('compte2').find({id_temp:id_temp},function(err,loginCo)
+				{
+
+					_this.msg = loginCo;
+					_this.send_res();
+			
+				});
+			});
+		} else 	_this.erreur(2);
     },
 
 get_info:
-    function (id,name) {
+    function (id_temp,name) {
         var _this = this;
-       mongoose.model('compte2').findOne({ _id : id },function (err,loginCo)
-	   { var __this = _this;
-		   mongoose.model('compte2').findOne({ pseudo : name},function (err,loginAmi)
-		   {
-			if( loginAmi != null){
-				for( var i =0; i< loginCo.friend.length; i++){
-				if(loginAmi._id.equals((loginCo.friend[i])))
-				{
-					__this.msg = loginAmi.content;
-					__this.send_res();
-				}
-				}}
-				else __this.erreur(4);	
-			});  
-		
-		});  
+		if( id_temp != 0){
+		   mongoose.model('compte2').findOne({ id_temp : id_temp },function (err,loginCo)
+		   { 
+			   mongoose.model('compte2').findOne({ pseudo : name},function (err,loginAmi)
+			   {
+				if( loginAmi != null){
+					for( var i =0; i< loginCo.friend.length; i++){
+						if(loginAmi.id_temp.equals((loginCo.friend[i])))
+						{
+							_this.msg = loginAmi.content;
+							_this.send_res();
+						}
+					}}
+					else _this.erreur(4);	
+				});  
+			
+			}); 
+		}else 	_this.erreur(2);		
     },
 get_friend:
-    function (id) {
+    function (id_temp) {
         var _this = this;
-       mongoose.model('compte2').findOne({ _id : id },function (err,loginCo)
-	   {
-			_this.msg =loginCo.friend;
-			_this.send_res();
-		
-		});  
+		if( id_temp != 0){
+		   mongoose.model('compte2').findOne({ id_temp : id_temp }).populate("friend","pseudo").exec(function (err, c)
+		   {	
+						_this.msg = c.friend;
+						_this.send_res();
+
+			});  
+		}else 	_this.erreur(2);
     },
 add_friend:
-//http://localhost:1337/add_friend?id=5479e355dd1d72e816ca3166&name=abi
-    function (id,name) {
+//http://localhost:1337/add_friend?id_temp=5479e355dd1d72e816ca3166&name=abi
+    function (id_temp,name) {
 	var _this = this;
-		mongoose.model('compte2').findOne({ pseudo : name},function (err,loginAmi)
+	if(id_temp !=0){
+		mongoose.model('compte2').findOne({ pseudo : name},function (err,userAmi)
 	   {
-			var __this = _this;
-			if (loginAmi == null) _this.erreur(3);
-			else{mongoose.model('compte2').findOne({ _id : id },function (err,loginCo)
+			
+			if (userAmi == null) _this.erreur(3);
+			else{
+			mongoose.model('compte2').findOne({ id_temp : id_temp },function (err,user)
 		   { 
-				var ___this = __this;
+				
 				var pasAmi = true;
-				for( var i =0; i< loginCo.friend.length; i++){
-				if(loginAmi._id.equals((loginCo.friend[i])))
+				for( var i =0; i< user.friend.length; i++){
+				if(userAmi._id.equals(user.friend[i]))
 				{pasAmi = false;}}
 				if(pasAmi){
-					mongoose.model('compte2').update({_id :id},{$push : {friend : loginAmi._id}},{multi : true }, function (err,nA)
-					{
-						console.log("nombre de doc mis a jour" + nA);
-							___this.msg = loginCo;
-							___this.send_res();
-					});
-				} 
-				else __this.erreur(5);
+				user.friend.push(userAmi._id);
+				user.save(function (e){
+					if (e) console.log(e);
+					else {
+						_this.msg = ""+user;
+						_this.send_res();
+					}
+				});} 
+				else _this.erreur(5);
 
 			});
-	}
-		 }); 
+			}
+		 });
+		 }else 	_this.erreur(2);
 		 				 
     },
 delete_friend:
- function (id,name) {
+ function (id_temp,name) {
 	var _this = this;
- 
-        mongoose.model('compte2').findOne({ pseudo : name},function (err,loginAmi)
+	if(id_friend != 0){
+		mongoose.model('compte2').findOne({ pseudo : name},function (err,userAmi)
 	   {
-			var __this = _this;
-	   		if (loginAmi == null) _this.erreur(6);
+			if (userAmi == null) _this.erreur(4);
 			else{
-
-				mongoose.model('compte2').update({_id :id},{$pull : { friend : loginAmi._id}},{multi :true},function(err,nA)
-				{
-					console.log("nombre de document mis a jour: " + nA);
-					mongoose.model('compte2').find({_id :id},function(err,loginCo)
-					{
-						__this.msg = loginCo;
-						__this.send_res();
+			mongoose.model('compte2').findOne({ id_temp : id_temp },function (err,user)
+		   { 
 				
-					});
-			
+				var Ami = false;
+				for( var i =0; i< user.friend.length; i++)
+				{
+					if(userAmi._id.equals((user.friend[i])))
+					{
+						Ami = true;
+					}
+				}
+				if(Ami)
+				{
+				user.friend.pull(userAmi._id);
+				user.save(function (e){
+					if (e) console.log(e);
+					else {
+						_this.msg = ""+user;
+						_this.send_res();
+					}
 				});
-			
-			}
-		 }); 
+				} 
+				else _this.erreur(4);
+
+			});
+	}
+		 }); } else _this.erreur(2);
 		 				 
     },
-/* send_msg :
-	function (var) {
-		
-	
-	
-	
-	},*/
+
 
 erreur :
 	function (err) {
@@ -275,9 +307,6 @@ erreur :
 		break;
 	case 5 :
 		this.msg = "votre ami est deja dans votre liste d'amis";
-		break;
-	case 6 :
-		this.msg = "votre ami n existe pas ou n est pas dans votre liste d'amis";
 		break;
 		}
 	this.send_res();
