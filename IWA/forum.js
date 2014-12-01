@@ -8,7 +8,7 @@ forum.start = function ()
 forum.click = function (ev)
 {
 	var src = ev.target;
-	if (src.has_class("btn-add"))
+	if (src.has_class("btn-add-message"))
 	{
 		forum.add_message();
 	}
@@ -22,9 +22,14 @@ forum.click = function (ev)
 
 forum.add_message = function ()
 {
-	var elt = document.getElementsClassName("messages-list")[0];
+	var elt = document.getElementsByClassName("messages-list")[0];
 	var a = document.getElementsByClassName("input-message")[0].value;
-	elt.innerHTML += "<li>" + a + "</li>";
+	var separ = "<div class=\"row separateur\">" + "</div>";
+	var d = new Date();
+	var date = d.getHours();
+
+	elt.innerHTML += separ + "<div class=\"row message\">"
+	+ "<p>" + a + "<p>" + "</div>";
 };
 
 
@@ -37,16 +42,6 @@ function new_thread(info)
 	document.getElementById('messages').appendChild(message)
 
 }
-
-
-function get _threads(){}
-
-function show_thread(id){}
-
-function reply_to_thread(id, info){}
-
-
-function delete_thread(id){}
 
 
 window.onload = forum.start;
