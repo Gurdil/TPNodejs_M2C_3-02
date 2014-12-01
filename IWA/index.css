@@ -1,0 +1,42 @@
+html
+{
+	height: 100%;
+	width: 100%;
+	
+}
+
+body 
+{
+	height: 100%;
+	width: 100%;
+	background-image: url("images/ipad-grey.jpg");
+	background-attachment: fixed;
+	background-repeat: repeat;
+
+
+}
+
+header
+{
+	background-color: #404040;
+
+}
+
+h1
+{
+	color: #fff;
+}
+
+.container
+{
+	height: 100%;
+	width: 100%;
+
+}
+
+#loginform
+{
+	margin-right: 0px;
+
+}
+
