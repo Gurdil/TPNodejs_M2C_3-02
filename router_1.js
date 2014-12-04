@@ -1,3 +1,18 @@
+/* lien pour tester les fonctions
+http://localhost:1337/register?name=patrick&pass=5747
+http://localhost:1337/register?name=abi&pass=5747
+http://localhost:1337/login?name=patrick&pass=5747
+http://localhost:1337/login?name=abi&pass=5747
+http://localhost:1337/add_friend?id_temp=5479e355dd1d72e816ca3166&name=abi
+http://localhost:1337/set_info?id_temp=5479e355dd1d72e816ca3166&info=Vivelesurf
+http://localhost:1337/set_info?id_temp=5479e355dd1d72e816ca3176&info=Vivelescours
+http://localhost:1337/get_info?id_temp=5479e355dd1d72e816ca3166&name=abi
+http://localhost:1337/get_friend?id_temp=5479e355dd1d72e816ca3166
+http://localhost:1337/delete_friend?id_temp=5479e355dd1d72e816ca3166&name=abi
+http://localhost:1337/logout?name=patrick&pass=5747
+http://localhost:1337/delete_compte?name=abi&pass=5747
+
+*/
 var url = require("url");
 var router = {};
 // Inclusion de Mongoose
@@ -68,6 +83,8 @@ routing:
             this.add_friend(this.query.id_temp,this.query.name);
 		} else if (this.path== "/delete_friend") {
             this.delete_friend(this.query.id_temp,this.query.name);
+        } else if (this.path== "/test") {
+            this.test();
         } else {
             this.not_found();
         }
@@ -79,10 +96,9 @@ not_found:
         this.msg = "Function not found";
         this.send_res();
     },
-
 	
+
 register:
-	//http://localhost:1337/register?name=abi&pass=1745
     function (name,pass) {
 		var _this = this;
 	
@@ -107,8 +123,7 @@ delete_compte:
         this.msg = this.delete_proc(name,pass);
         this.send_res();
     },
-//http://localhost:1337/register?name=patrick&pass=5747
-//http://localhost:1337/login?name=patrick&pass=5747
+
 delete_proc:
     function (name,pass) {
         mongoose.model('compte2').remove({ pseudo : name , motPass : pass },function(err){
@@ -217,7 +232,7 @@ get_friend:
 		}else 	_this.erreur(2);
     },
 add_friend:
-//http://localhost:1337/add_friend?id_temp=5479e355dd1d72e816ca3166&name=abi
+
     function (id_temp,name) {
 	var _this = this;
 	if(id_temp !=0){

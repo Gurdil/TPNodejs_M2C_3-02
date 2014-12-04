@@ -3,6 +3,7 @@ var forum ={};
 forum.start = function ()
 {
 	document.addEventListener("click", forum.click);
+	forum.get_thread();
 };
 
 forum.click = function (ev)
@@ -11,6 +12,7 @@ forum.click = function (ev)
 	if (src.has_class("btn-add-message"))
 	{
 		forum.add_message();
+		
 	}
 	else
 	{
@@ -32,6 +34,20 @@ forum.add_message = function ()
 	+ "<p>" + a + "<p>" + "</div>";
 };
 
+forum.get_thread = function (){
+
+$.getJSON("http://tp-iwa.waxo.org/get_threads", function(data) {
+
+//alert("Data" + data);
+
+var obj= [];
+obj=data.threads;
+
+alert("Data" + obj)
+});
+
+
+};
 
 
 function new_thread(info)
