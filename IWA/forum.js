@@ -2,8 +2,8 @@ var forum ={};
 
 forum.start = function ()
 {
-	document.addEventListener("click", forum.click);
 	forum.get_thread();
+	document.addEventListener("click", forum.click);
 };
 
 forum.click = function (ev)
@@ -12,7 +12,6 @@ forum.click = function (ev)
 	if (src.has_class("btn-add-message"))
 	{
 		forum.add_message();
-		
 	}
 	else
 	{
@@ -34,35 +33,126 @@ forum.add_message = function ()
 	+ "<p>" + a + "<p>" + "</div>";
 };
 
-forum.get_thread = function (){
+/*
+forum.get_threads = function ()
+{
 
-$.getJSON("http://tp-iwa.waxo.org/get_threads", function(data) {
+	var array= [];
 
-//alert("Data" + data);
+	$.getJSON("http://tp-iwa.waxo.org/get_threads", function(data) 
+	{
 
-var obj= [];
-obj=data.threads;
+	//alert("Data" + data);
+	
+	array=data.threads;
 
-alert("Data" + obj)
-});
+	alert("Data" + array)
+	
+	});
+
+	
+};*/
 
 
+forum.cb_get = function () 
+{
+	var data=[];
+    if (this.readyState == 4 && this.status == 200) 
+	{	
+		data= JSON.parse(this.responseText).threads;
+		forum.show_thread(data);
+    }
 };
 
 
-function new_thread(info)
+forum.cb_show = function ()
 {
+	var data=[];
+    if (this.readyState == 4 && this.status == 200) 
+	{	
+		data= JSON.parse(this.responseText).thread;
+		//alert("data" +data.length);
+		forum.show_content(data);
+    }
+};
 
-	var message = document.createElement('div');
 
-	document.getElementById('messages').appendChild(message)
-
+forum.get = function (req, cb)
+{
+	//on crée une variable au format XMLhttp
+	var xhr = new XMLHttpRequest();
+	//on ouvre l URL ,la requet est de facon asynchrone 
+    xhr.open("GET", req, true);
+	//quand l ouverture et prete on change la valeur par cb
+    xhr.onreadystatechange = cb;
+	//on envoi la toute la donner avec le changement 
+    xhr.send();
 }
+
+
+forum.get_thread = function ()
+{  
+	var req="http://tp-iwa.waxo.org/get_threads";
+	forum.get(req,forum.cb_get);
+};
+
+
+forum.show_thread = function (data)
+{  
+	var threadArray=[];
+	var thread= [];
+
+	//threadArray=iwa.get_thread();
+	threadArray=data;
+
+	//alert("thread lenght" +threadArray.length);
+
+
+	for(var i=0; i<11; ++i)
+	{
+
+		thread.push(threadArray[threadArray.length-i-1]);
+	}
+
+	alert("11 last threads  " + thread);
+
+	var div = document.getElementById("discussions");
+
+	for(i in thread)
+	{
+
+		div.innerHTML += '<tr><td><a id=' + thread[i] + ' href="">' + thread[i] + '</a></td><td><span class="badge">' + i + '</span>' +'</td><td></tr>';
+    	//compteur++;
+		
+	}
+};
+
+
+var compteur=0;
+forum.show_content = function (data)
+{  
+	var threadArray=[];
+
+	threadArray=data;
+
+	
+	var div = document.getElementById("discussions");
+    var html = "";
+
+    for (var i=0; i<threadArray.length; ++i) {
+
+    	div.innerHTML += '<tr><td>'+ '<span class="badge">' + compteur + '</span>' +'</td><td>'+ threadArray[i]+'</td></tr>'
+    	compteur++;
+       	
+    }
+
+};
 
 
 window.onload = forum.start;
 
 
-HTMLElement.prototype.has_class = function (c) {
+HTMLElement.prototype.has_class = function (c)
+{
 	return this.className.indexOf(c) >= 0;
 };

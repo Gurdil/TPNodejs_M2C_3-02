@@ -1,7 +1,6 @@
 html
 {
-	height: 100%;
-	width: 100%;
+
 	
 }
 
@@ -12,13 +11,14 @@ body
 	background-image: url("images/ipad-grey.jpg");
 	background-attachment: fixed;
 	background-repeat: repeat;
+	background-size: cover;
 
 
 }
 
-header
+.headerTop
 {
-	background-color: #404040;
+	background-color: #555;
 
 }
 
@@ -29,8 +29,7 @@ h1
 
 .container
 {
-	height: 100%;
-	width: 100%;
+	margin: 0 auto;
 
 }
 

@@ -13,9 +13,8 @@
     </head>
 	<body>
 
-	<div class="container">
 		<!--Login-->
-		<header class="row">
+		<header class="row headerTop">
 			<div class="col-sm-3">
 				<h1>Mon Forum</h1>
 			</div>
@@ -24,16 +23,66 @@
 					<input id="username" type="text" placeholder="Nom d'utilisateur" name="login">
 					<input id="userpsw" type="text" placeholder="Mot de passe" name="password">
 					<!--<input id="mail" type="mail" placeholder="E-mail" name="mail">-->
-					<input type="submit" value="Envoyer">
+					<input type="submit" value="Connexion">
 				</form>
 			</div>
 	    </header>
 
+	    <div class="separateur" style="min-height: 92px">
+	    </div>
+
 	    <div class="row" id="separateur">
 	    </div>
 
-		<div class ="row">
-		
+		<div class ="container">
+
+			<table class="table table-hover table-bordered table-striped">
+				<thead>
+					<tr>
+						<th>Threads</th>
+						<th>Messages</th>
+						<th>Dernier message</th>
+					</tr>
+				</thead>
+				<tbody class="messages" id="discussions">
+					<tr>
+						<td>
+							<a href="">
+								<div>
+									THREAD1
+								</div>
+								<div>
+									par Auteur
+								</div>
+							</a>
+						</td>
+						<td>
+							5
+						</td>
+						<td>
+							par Machin
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="">
+							<div>
+								THREAD2
+							</div>
+							<div>
+								par Auteur
+							</div>
+							</a>
+						</td>
+						<td>
+							3
+						</td>
+						<td>
+							par Machin
+						</td>
+					</tr>
+				</tbody>
+			</table>
 			<!--Discussions-->
 			<div class="col-lg-12 messages-list">
 
@@ -42,7 +91,7 @@
 
 					<!--image auteur-->
 					<div class="col-xs-1">
-						<img src="images/avatar2.jpg" alt="avatar" height="70px" width="70px">
+						<img src="images/avatar2.jpg" class="img-rounded" alt="avatar" height="70px" width="70px">
 					</div>
 					<!--Contenu Message-->
 					<div class="col-xs-11">
@@ -106,13 +155,12 @@
 
 
 
-	</div>
 
 	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>-->
 	<script src="forum.js"></script>
 	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-	<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-	<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+	<!--<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+	<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>-->
 	</body>
 </html>
