@@ -4,8 +4,7 @@
 
 var parserMessage;
 
-parserMessage = function (messageThread)
-{
+parserMessage = function (messageThread) {
     this.messageThread = messageThread;
 
     var tagName = "VIDEO";
@@ -14,34 +13,55 @@ parserMessage = function (messageThread)
     var message = this.messageThread;
     do
     {
-        var regVideo = new RegExp("\\["+tagName+"\\](.+?)\\[\\/"+tagName+"\\]", "g");
+        var regVideo = new RegExp("\\[" + tagName + "\\](.+?)\\[\\/" + tagName + "\\]", "g");
         result = regVideo.exec(message);
-        if(result == null)
-        {
+        if (result == null) {
             break;
         }
 
         message = message.slice(result.index + result[0].length);
 
         var regCodeVideo = new RegExp("v=(.+?)(&|$)", "g");
-        var codeVideo =regCodeVideo.exec(result[1]);
+        var codeVideo = regCodeVideo.exec(result[1]);
 
-        this.messageThread = this.messageThread.replace(result[0], '<p><iframe  width="560" height="315" src="//www.youtube.com/embed/' + codeVideo[1] + '" frameborder="0"' +  "allowfullscreen>" + "</iframe></p>");
+        this.messageThread = this.messageThread.replace(result[0], '<p><iframe  width="560" height="315" src="//www.youtube.com/embed/' + codeVideo[1] + '" frameborder="0"' + "allowfullscreen>" + "</iframe></p>");
 
-    }while (true);
+    } while (true);
 
-    this.parseBalise("author", '<p><h1>$1</h1></p>');
+    //this.parseBalise("author", '<p><h1>$1</h1></p>');
+
+    this.author = "";
+    this.author = this.extractBalise("author");
+
+    this.title = "";
+    this.title = this.extractBalise("title")
 
     this.parseBalise("IMG", '<p><img src="$1"></p>');
 
     var elt = document.getElementsByClassName("add")[0];
-    elt.innerHTML +="<li>" + this.messageThread + "</li>";
+    elt.innerHTML +="<li>" + "<p><h1>" + this.author + "</h1></p>" + "<p>" + this.title + "</p>" + this.messageThread + "</li>";
+};
+
+parserMessage.prototype.extractBalise = function(tagName)
+{
+    var reg = new RegExp("\\[" + tagName + "\\](.+?)\\[\\/" + tagName + "\\]", "gi");
+    var sauvegarde = reg.exec(this.messageThread);
+
+    if (sauvegarde != null)
+    {
+        this.messageThread = this.messageThread.replace(sauvegarde[0], "");
+        return sauvegarde[1];
+    }
+    else
+    {
+        return "";
+    }
 };
 
 parserMessage.prototype.parseBalise = function(tagName, html)
 {
-    var regAuthor = new RegExp("\\["+tagName+"\\](.+?)\\[\\/"+tagName+"\\]", "g");
-    this.messageThread = this.messageThread.replace(regAuthor, html);
+    var reg = new RegExp("\\["+tagName+"\\](.+?)\\[\\/"+tagName+"\\]", "gi");
+    this.messageThread = this.messageThread.replace(reg, html);
 };
 
 HTMLElement.prototype.has_class = function(c)
