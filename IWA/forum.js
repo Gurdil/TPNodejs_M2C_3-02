@@ -26,8 +26,6 @@ forum.add_message = function ()
 	var elt = document.getElementsByClassName("messages-list")[0];
 	var a = document.getElementsByClassName("input-message")[0].value;
 	var separ = "<div class=\"row separateur\">" + "</div>";
-	var d = new Date();
-	var date = d.getHours();
 
 	elt.innerHTML += separ + "<div class=\"row message\">"
 	+ "<p>" + a + "<p>" + "</div>";
@@ -121,7 +119,7 @@ forum.show_thread = function (data)
 	for(i in thread)
 	{
 
-		div.innerHTML += '<tr><td><a id=' + thread[i] + ' href="">' + thread[i] + '</a></td><td><span class="badge">' + i + '</span>' +'</td><td></tr>';
+		div.innerHTML += '<tr><td><a id=' + thread[i] + ' href="thread.html/?id=' + thread[i] + '"><div>' + thread[i] + '</div></a></td><td><span class="badge">' + i + '</span></td><td></tr>';
     	//compteur++;
 		
 	}
