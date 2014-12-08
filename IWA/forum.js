@@ -58,7 +58,7 @@ forum.cb_get = function ()
     if (this.readyState == 4 && this.status == 200) 
 	{	
 		data= JSON.parse(this.responseText).threads;
-		forum.show_thread(data);
+		forum.show_threads(data);
     }
 };
 
@@ -95,7 +95,7 @@ forum.get_thread = function ()
 };
 
 
-forum.show_thread = function (data)
+forum.show_threads = function (data)
 {  
 	var threadArray=[];
 	var thread= [];
@@ -112,7 +112,7 @@ forum.show_thread = function (data)
 		thread.push(threadArray[threadArray.length-i-1]);
 	}
 
-	alert("11 last threads  " + thread);
+	//alert("11 last threads  " + thread);
 
 	var div = document.getElementById("discussions");
 
@@ -120,7 +120,6 @@ forum.show_thread = function (data)
 	{
 
 		div.innerHTML += '<tr><td><a id=' + thread[i] + ' href="thread.html?id=' + thread[i] + '"><div>' + thread[i] + '</div></a></td><td><span class="badge">' + i + '</span></td><td></tr>';
-    	//compteur++;
 		
 	}
 };

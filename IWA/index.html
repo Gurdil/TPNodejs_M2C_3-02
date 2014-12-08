@@ -19,128 +19,38 @@
 				<h1>Mon Forum</h1>
 			</div>
 			<div class="col-sm-9">
-				<form id="loginform" action="">
-					<input id="username" type="text" placeholder="Nom d'utilisateur" name="login">
-					<input id="userpsw" type="text" placeholder="Mot de passe" name="password">
-					<!--<input id="mail" type="mail" placeholder="E-mail" name="mail">-->
-					<input type="submit" value="Connexion">
-				</form>
+				<form class="form-inline" role="form">
+					 <div class="form-group">
+	    				<label class="sr-only">Nom D'utilisateur</label>
+	   					<input type="text" class="form-control" placeholder="Nom d'utilisateur">
+	   					<label class="sr-only">Mot de passe</label>
+    					<input type="password" class="form-control" placeholder="Mot de passe">
+    					<span class="input-group-btn">
+                    		<button class="btn btn-info btn-sm btn-connexion">Connexion</button>
+               			</span>
+	 				 </div>
+ 				</form>
 			</div>
 	    </header>
 
 	    <div class="separateur" style="min-height: 92px">
 	    </div>
 
-	    <div class="row" id="separateur">
-	    </div>
-
 		<div class ="container">
-
+			<!--Liste des Threads-->
 			<table class="table table-hover table-bordered table-striped">
 				<thead>
 					<tr>
-						<th>Threads</th>
+						<th>Sujets</th>
 						<th>Messages</th>
 						<th>Dernier message</th>
 					</tr>
 				</thead>
 				<tbody class="messages" id="discussions">
-					<tr>
-						<td>
-							<a href="">
-								<div>
-									THREAD1
-								</div>
-								<div>
-									par Auteur
-								</div>
-							</a>
-						</td>
-						<td>
-							5
-						</td>
-						<td>
-							par Machin
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<a href="">
-							<div>
-								THREAD2
-							</div>
-							<div>
-								par Auteur
-							</div>
-							</a>
-						</td>
-						<td>
-							3
-						</td>
-						<td>
-							par Machin
-						</td>
-					</tr>
+
 				</tbody>
 			</table>
-			<!--Discussions-->
-			<div class="col-lg-12 messages-list">
-
-				<!--Message-->
-				<div class="row message">
-
-					<!--image auteur-->
-					<div class="col-xs-1">
-						<img src="images/avatar2.jpg" class="img-rounded" alt="avatar" height="70px" width="70px">
-					</div>
-					<!--Contenu Message-->
-					<div class="col-xs-11">
-						<div class="row">
-							<div class="col-xs-3">
-							<author>Pseudo Auteur</author>
-							</div>
-
-							<div class="col-xs-2 col-xs-offset-7">
-								<small class="text-muted"><span class="glyphicon glyphicon-time"></span>19:30</small>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-xs-12">
-								<p>ChapiChapololz hjevf ejhebc ezavgr vdw</p>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div class="row" id="separateur">
-	   			</div>
-
-	   			<!--Message-->
-				<div class="row">
-					<!--image auteur-->
-					<div class="col-xs-1">
-						<img src="images/avatar.png" alt="avatar" height="70px" width="70px">
-					</div>
-					<!--Contenu Message-->
-					<div class="col-xs-11">
-						<div class="row">
-							<div class="col-xs-3">
-							<author>Pseudo Auteur</author>
-							</div>
-							<!--date-->
-							<div class="col-xs-2 col-xs-offset-7">
-								<small class="text-muted"><span class="glyphicon glyphicon-time"></span>20:00</small>
-							</div>
-						</div>
-						<div class="row">
-							<p>Blablalbaalabalblaballbalalabbalbabl</p>
-						</div>
-					</div>
-				</div>
-
-
-			</div>
-
+			
  		
 	    <!--formulaire envoi message-->
 		<footer class ="row">
