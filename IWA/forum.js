@@ -119,7 +119,7 @@ forum.show_thread = function (data)
 	for(i in thread)
 	{
 
-		div.innerHTML += '<tr><td><a id=' + thread[i] + ' href="thread.html/?id=' + thread[i] + '"><div>' + thread[i] + '</div></a></td><td><span class="badge">' + i + '</span></td><td></tr>';
+		div.innerHTML += '<tr><td><a id=' + thread[i] + ' href="thread.html?id=' + thread[i] + '"><div>' + thread[i] + '</div></a></td><td><span class="badge">' + i + '</span></td><td></tr>';
     	//compteur++;
 		
 	}
