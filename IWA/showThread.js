@@ -53,13 +53,12 @@ cb_messages = function ()
     if (this.readyState == 4 && this.status == 200) 
     {   
         data= JSON.parse(this.responseText).thread;
-        //alert("data" +data.length);
         display_content(data);
     }
 };
 
 
-get_messages = function ()
+get_messages = function (url)
 {  
     var req="http://tp-iwa.waxo.org/show_thread?id=" + url.searchObject.id;
     get(req, cb_messages);
@@ -67,10 +66,19 @@ get_messages = function ()
 
 
 /*----Affichage des messages----*/
-/*var compteur=0;
+var compteur=0;
 display_content = function (data)
 {  
-    var threadArray=[];
+    var post=[];
+
+    for (var i=0; i<data.length; ++i)
+    {
+
+        post[i] = new parserMessage(data[i]);
+
+    }
+	
+	/**var threadArray=[];
 
     threadArray=data;
 
@@ -84,10 +92,10 @@ display_content = function (data)
         div.innerHTML += "<div class=\"row message\">" + "<p>" + threadArray[i] + "<p>" + "</div>";
         compteur++;
         
-    }
+    }**/
 
 };
-*/
+
 
 /*-----Récupération des infos des messages-----*/
 var parserMessage;
@@ -160,18 +168,10 @@ parserMessage.prototype.parseBalise = function(tagName, html)
 var start = function()
 {
     var currentLocation =  document.location.href;
-    console.log(currentLocation);
 
     var url = parseURL(currentLocation);
-
-    var post=[];
-
-    for (var i=0; i<threadArray.length; ++i)
-    {
-
-        var post[i] = new parserMessage(data[i]);
-
-    }
+	
+	get_messages(url);
 };
 
 window.onload = start;
