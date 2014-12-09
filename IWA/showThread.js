@@ -161,12 +161,42 @@ parserMessage.prototype.parseBalise = function(tagName, html)
 };
 
 
+var showThread = {};
 
+function httpGet(theUrl)
+{
+    var xmlHttp = null;
 
+    xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", theUrl, false );
+    xmlHttp.send( null );
+    return xmlHttp.responseText;
+}
 
+showThread.postMessage = function ()
+{
+    var a = document.getElementsByClassName("input-message")[0].value;
+    httpGet('http://tp-iwa.waxo.org/reply_to_thread?id=' + parseURL(document.location.href).searchObject.id + '&info=' + a);
+
+};
+
+showThread.click = function (ev)
+{
+    var src = ev.target;
+    if (src.has_class("btn-add-message"))
+    {
+        showThread.postMessage();
+    }
+    else
+    {
+        console.log("Not Found");
+    }
+};
 
 var start = function()
 {
+	document.addEventListener("click", showThread.click);
+
     var currentLocation =  document.location.href;
 
     var url = parseURL(currentLocation);
@@ -175,3 +205,8 @@ var start = function()
 };
 
 window.onload = start;
+
+HTMLElement.prototype.has_class = function(c)
+{
+    return this.className.indexOf(c) >= 0;
+};
